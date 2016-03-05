@@ -19,6 +19,11 @@ public class CalcSumTest {
 	}
 	
 	@Test
+	public void concatenateStrings() throws IOException {
+		assertThat(this.calculator.concatenate(this.numFilepath), is("1234"));
+	}
+	
+	@Test
 	public void sumOfNumbers() throws IOException {
 		assertThat(this.calculator.calcSum(this.numFilepath), is(10));
 	}
