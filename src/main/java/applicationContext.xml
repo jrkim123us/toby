@@ -20,15 +20,15 @@
 		
 	<!-- 아래의 설정은 DataSource 인터페이스 전환시 사용되는 설정입니다.
 		DataSource 인터페이스 사용시 아래 코드의 주석을 풀고 위 코드를 주석 처리 하세요. -->
-	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://your.dbserver.org:3306/springbook?characterEncoding=UTF-8" />
-		<property name="username" value="yourID" />
-		<property name="password" value="yourPASS" />
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306?characterEncoding=UTF-8" />
+		<property name="username" value="root" />
+		<!-- <property name="password" value="yourPASS" /> -->
 	</bean>
 
-	<bean id="userDao" class="springbook.user.dao.UserDao">
+	<bean id="userDao" class="com.okstudio.user.dao.UserDao">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	-->
+	
 </beans>
