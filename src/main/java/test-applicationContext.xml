@@ -11,6 +11,8 @@
 	</bean>
 	
 	<bean id="userDao" class="com.okstudio.user.dao.UserDao">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dataSource" />		
 	</bean>
+	
+	
 </beans>
