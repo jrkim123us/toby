@@ -11,11 +11,8 @@
 	</bean>
 	
 	<bean id="userDao" class="com.okstudio.user.dao.UserDao">
-		<property name="dataSource" ref="dataSource" />
-		<property name="jdbcContext" ref="jdbcContext" />
+		<property name="dataSource" ref="dataSource" />		
 	</bean>
 	
-	<bean id="jdbcContext" class="com.okstudio.user.dao.JdbcContext">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
+	
 </beans>
