@@ -28,8 +28,18 @@ public class JdbcContext {
 		} finally {
 			if (preparedStatement != null) { try{ preparedStatement.close();} catch(SQLException e){}}
 			if (connection != null) {try{connection.close();} catch(SQLException e) {}}
-		}
-		
+		}		
+	}
+	
+	public void executeSql(final String query) throws SQLException {
+		this.workWithStatementStrategy(
+			new StatementStrategy() {				
+				@Override
+				public PreparedStatement makePreparedStatement(Connection c) throws SQLException {					
+					return c.prepareStatement(query);
+				}
+			}
+		);
 	}
 
 }
