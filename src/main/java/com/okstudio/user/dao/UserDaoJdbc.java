@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.okstudio.user.domain.Level;
 import com.okstudio.user.domain.User;
 
 public class UserDaoJdbc implements UserDao {
@@ -22,6 +23,10 @@ public class UserDaoJdbc implements UserDao {
 				user.setId(resultSet.getString("id"));
 				user.setName(resultSet.getString("name"));
 				user.setPassword(resultSet.getString("password"));
+				user.setLevel(Level.valueOf(resultSet.getInt("level")));
+				user.setLogin(resultSet.getInt("login"));
+				user.setRecommend(resultSet.getInt("recommend"));
+				user.setEmail(resultSet.getString("email"));
 				return user;
 			}
 		};
@@ -32,10 +37,14 @@ public class UserDaoJdbc implements UserDao {
 
 	public void add(final User user) {
 		this.jdbcTemplate.update(
-			"insert into users(id, name, password) values(?,?,?)",
+			"insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)",
 			user.getId(),
 			user.getName(),
-			user.getPassword()
+			user.getPassword(),
+			user.getLevel().intValue(),
+			user.getLogin(),
+			user.getRecommend(),
+			user.getEmail()
 		);		
 	}
 
@@ -44,6 +53,18 @@ public class UserDaoJdbc implements UserDao {
 			new Object[] {id},
 			this.userMapper
 		);
+	}
+	
+	public void update(User user) {
+		this.jdbcTemplate.update(
+			"update users set name=?,password=?,level=?,login=?,recommend=?,email=? where id=?",
+			user.getName(),
+			user.getPassword(),
+			user.getLevel().intValue(),
+			user.getLogin(),
+			user.getRecommend(),
+			user.getEmail(),
+			user.getId());
 	}
 
 	public void deleteAll() {
