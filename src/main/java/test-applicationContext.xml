@@ -12,6 +12,7 @@
 	
 	<bean id="userService" class="com.okstudio.user.service.UserService">
 		<property name="userDao" ref="userDao"></property>
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
 	<bean id="userDao" class="com.okstudio.user.dao.UserDaoJdbc">
