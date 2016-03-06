@@ -1,5 +1,7 @@
 package com.okstudio.user.service;
 
+import static com.okstudio.user.service.UserService.MIN_LOGCOUNT_FOL_SILVER;
+import static com.okstudio.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -33,11 +35,11 @@ public class UserServiceTest {
 	@Before
 	public void setUp() {
 		users = Arrays.asList(
-			new User("001_bumjin", "박범진", "p1", Level.BASIC, 49, 0),
-			new User("002_joytouch", "강명", "p2", Level.BASIC, 50, 0),
-			new User("003_erwins", "신승환", "p3", Level.SILVER, 60, 29),
-			new User("004_madnite1", "이상호", "p4", Level.SILVER, 60, 30),
-			new User("005_green", "오민규", "p5", Level.GOLD, 100, 100)			
+			new User("001_bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOL_SILVER-1, 0),
+			new User("002_joytouch", "강명", "p2", Level.BASIC, MIN_LOGCOUNT_FOL_SILVER, 0),
+			new User("003_erwins", "신승환", "p3", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD-1),
+			new User("004_madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECOMMEND_FOR_GOLD),
+			new User("005_green", "오민규", "p5", Level.GOLD, 100, Integer.MAX_VALUE)			
 		);		
 	}
 	
@@ -68,16 +70,21 @@ public class UserServiceTest {
 		
 		this.userService.upgradeLevels();
 		
-		this.checkLevel(users.get(0), Level.BASIC);
-		this.checkLevel(users.get(1), Level.SILVER);
-		this.checkLevel(users.get(2), Level.SILVER);
-		this.checkLevel(users.get(3), Level.GOLD);
-		this.checkLevel(users.get(4), Level.GOLD);
+		this.checkLevel(users.get(0), false);
+		this.checkLevel(users.get(1), true);
+		this.checkLevel(users.get(2), false);
+		this.checkLevel(users.get(3), true);
+		this.checkLevel(users.get(4), false);
 	}
 	
-	private void checkLevel(User user, Level expectedLevel){
+	private void checkLevel(User user, boolean upgraded){
 		User userUpdate = userDao.get(user.getId());
-		assertThat(userUpdate.getLevel(), is(expectedLevel));
+		if(upgraded) {
+			assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+		} else {
+			assertThat(userUpdate.getLevel(), is(user.getLevel()));
+		}
+		
 	}
 	
 //	@Test
