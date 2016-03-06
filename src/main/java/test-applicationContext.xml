@@ -11,8 +11,9 @@
 	</bean>
 	
 	<bean id="userService" class="com.okstudio.user.service.UserService">
-		<property name="userDao" ref="userDao"></property>
+		<property name="userDao" ref="userDao"/>
 		<property name="transactionManager" ref="transactionManager" />
+		<property name="mailSender" ref="mailSender"/>
 	</bean>
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -21,7 +22,11 @@
 	
 	<bean id="userDao" class="com.okstudio.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />		
-	</bean>
+	</bean>	
 	
+	<!-- <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.server.com"/>
+	</bean> -->
+	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>
 	
 </beans>
