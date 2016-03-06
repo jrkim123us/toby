@@ -1,12 +1,10 @@
 package com.okstudio.user.service;
 
-import java.sql.Connection;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.okstudio.user.dao.UserDao;
 import com.okstudio.user.domain.Level;
@@ -17,20 +15,18 @@ public class UserService {
 	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 	
 	private UserDao userDao;
-	private DataSource dataSource;
-	
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+	private PlatformTransactionManager transactionManager;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+	
 	public void upgradeLevels() throws Exception{
-		TransactionSynchronizationManager.initSynchronization();
-		Connection connection = DataSourceUtils.getConnection(this.dataSource);
-		connection.setAutoCommit(false);
+		TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
 		try {
 			List<User> users = userDao.getAll();
@@ -39,16 +35,11 @@ public class UserService {
 					this.upgradeLevel(user);
 				}
 			}
-			connection.commit();
+			this.transactionManager.commit(status);
 		} catch(Exception e) {
-			connection.rollback();
+			this.transactionManager.rollback(status);
 			throw e;
-		} finally {
-			DataSourceUtils.releaseConnection(connection, this.dataSource);
-			TransactionSynchronizationManager.unbindResource(this.dataSource);
-			TransactionSynchronizationManager.clearSynchronization();
 		}
-		
 	}
 
 	public void add(User user) {

@@ -9,15 +9,13 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import com.okstudio.user.dao.UserDao;
 import com.okstudio.user.domain.Level;
@@ -25,15 +23,13 @@ import com.okstudio.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
-public class UserServiceTest {
-	@Autowired
-	ApplicationContext context;
+public class UserServiceTest {	
 	@Autowired
 	private UserDao userDao;
 	@Autowired
 	UserService userService;
 	@Autowired
-	private DataSource dataSource; 
+	PlatformTransactionManager transactionManager;
 	
 	List<User> users;
 	
@@ -86,7 +82,7 @@ public class UserServiceTest {
 	public void upgradeAllOrNothing() throws Exception {
 		UserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);
-		testUserService.setDataSource(this.dataSource);
+		testUserService.setTransactionManager(this.transactionManager);
 		
 		userDao.deleteAll();
 		for(User user : users) {
