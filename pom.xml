@@ -111,8 +111,7 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.10.19</version>
-		</dependency>							
-
+		</dependency>
 	</dependencies>
 	
 	<build>
@@ -123,6 +122,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-
 </project>

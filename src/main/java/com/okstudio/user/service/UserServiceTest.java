@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -112,10 +113,15 @@ public class UserServiceTest {
 		testUserService.setUserDao(this.userDao);		
 		testUserService.setMailSender(mailSender);
 		
-		UserServiceTx txUserService = new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(testUserService);
+		TransactionHandler transactionHandler = new TransactionHandler();
+		transactionHandler.setTarget(testUserService);
+		transactionHandler.setTransactionManager(this.transactionManager);
+		transactionHandler.setPattern("upgradeLevel");
 		
+		UserService txUserService = (UserService)Proxy.newProxyInstance(
+			getClass().getClassLoader(), new Class[] {UserService.class}, transactionHandler
+		);		
+
 		userDao.deleteAll();
 		for(User user : users) {
 			userDao.add(user);
