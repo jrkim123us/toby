@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -37,16 +36,11 @@ import com.okstudio.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {	
-	@Autowired
-	private UserDao userDao;
-	@Autowired
-	UserService userService;
-	@Autowired
-	UserServiceImpl userServiceImpl;
-	@Autowired
-	PlatformTransactionManager transactionManager;
-	@Autowired
-	MailSender mailSender;
+	@Autowired private UserDao userDao;
+	@Autowired UserService userService;
+	@Autowired UserService testUserService;
+	@Autowired PlatformTransactionManager transactionManager;
+	@Autowired MailSender mailSender;
 	@Autowired ApplicationContext context;	
 	
 	List<User> users;
@@ -112,21 +106,13 @@ public class UserServiceTest {
 	@Test
 	@DirtiesContext
 	public void upgradeAllOrNothing() throws Exception {
-		TestUserService testUserService = new TestUserService(users.get(3).getId());
-		testUserService.setUserDao(this.userDao);		
-		testUserService.setMailSender(mailSender);
-		
-		ProxyFactoryBean txProxyFactoryBean = this.context.getBean("&userService", ProxyFactoryBean.class);		
-		txProxyFactoryBean.setTarget(testUserService);
-		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
-
 		userDao.deleteAll();
 		for(User user : users) {
 			userDao.add(user);
 		}
 		
 		try {
-			txUserService.upgradeLevels();
+			this.testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 		} catch(TestUserServiceException e) {}
 		
@@ -186,13 +172,9 @@ public class UserServiceTest {
 		
 	}
 	
-	static class TestUserService extends UserServiceImpl {
-		private String id;
-		
-		private TestUserService(String id) {
-			this.id = id;
-		}
-		
+	static class TestUserServiceImpl extends UserServiceImpl {
+		private String id = "004_madnite1";
+
 		protected void upgradeLevel(User user) {
 			if(user.getId().equals(this.id)) {
 				throw new TestUserServiceException();
