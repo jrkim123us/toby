@@ -10,9 +10,11 @@
 		<property name="password" value="" />
 	</bean>
 	
-	<bean id="userService" class="com.okstudio.user.service.UserServiceTx">
+	<bean id="userService" class="com.okstudio.user.service.TxProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
-		<property name="userService" ref="userServiceImpl"/>
+		<property name="target" ref="userServiceImpl"/>
+		<property name="pattern" value="upgradeLevels"/>
+		<property name="serviceInterface" value="com.okstudio.user.service.UserService"></property>
 	</bean>	
 	
 	<bean id="userServiceImpl" class="com.okstudio.user.service.UserServiceImpl">

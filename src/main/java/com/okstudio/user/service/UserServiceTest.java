@@ -11,7 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -46,6 +46,7 @@ public class UserServiceTest {
 	PlatformTransactionManager transactionManager;
 	@Autowired
 	MailSender mailSender;
+	@Autowired ApplicationContext context;	
 	
 	List<User> users;
 	
@@ -108,19 +109,15 @@ public class UserServiceTest {
 	}
 	
 	@Test
+	@DirtiesContext
 	public void upgradeAllOrNothing() throws Exception {
 		TestUserService testUserService = new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.userDao);		
 		testUserService.setMailSender(mailSender);
 		
-		TransactionHandler transactionHandler = new TransactionHandler();
-		transactionHandler.setTarget(testUserService);
-		transactionHandler.setTransactionManager(this.transactionManager);
-		transactionHandler.setPattern("upgradeLevel");
-		
-		UserService txUserService = (UserService)Proxy.newProxyInstance(
-			getClass().getClassLoader(), new Class[] {UserService.class}, transactionHandler
-		);		
+		TxProxyFactoryBean txProxyFactoryBean = this.context.getBean("&userService", TxProxyFactoryBean.class);
+		txProxyFactoryBean.setTarget(testUserService);
+		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
 		userDao.deleteAll();
 		for(User user : users) {
