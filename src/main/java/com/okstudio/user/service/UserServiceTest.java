@@ -2,6 +2,7 @@ package com.okstudio.user.service;
 
 import static com.okstudio.user.service.UserServiceImpl.MIN_LOGCOUNT_FOL_SILVER;
 import static com.okstudio.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -101,6 +102,11 @@ public class UserServiceTest {
 		List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
 		assertThat(mailMessages.get(0).getTo()[0], is(users.get(1).getEmail()));
 		assertThat(mailMessages.get(1).getTo()[0], is(users.get(3).getEmail()));
+	}
+	
+	@Test
+	public void advisorAutoProxyCreator() {
+		assertThat(this.testUserService, instanceOf(java.lang.reflect.Proxy.class));
 	}
 	
 	@Test
