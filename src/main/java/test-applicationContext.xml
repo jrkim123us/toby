@@ -10,11 +10,13 @@
 		<property name="password" value="" />
 	</bean>
 	
-	<bean id="userService" class="com.okstudio.user.service.TxProxyFactoryBean">
-		<property name="transactionManager" ref="transactionManager"/>
+	<bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target" ref="userServiceImpl"/>
-		<property name="pattern" value="upgradeLevels"/>
-		<property name="serviceInterface" value="com.okstudio.user.service.UserService"></property>
+		<property name="interceptorNames">
+			<list>
+				<value>transactionAdvisor</value>
+			</list>
+		</property>		
 	</bean>	
 	
 	<bean id="userServiceImpl" class="com.okstudio.user.service.UserServiceImpl">
@@ -24,6 +26,19 @@
 	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="transactionAdvice" class="com.okstudio.user.service.TransactionAdvice">
+		<property name="transactionManager" ref="transactionManager"/>	
+	</bean>
+	
+	<bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+		<property name="mappedName" value="upgrade*"/>
+	</bean>
+	
+	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="transactionAdvice"/>
+		<property name="pointcut" ref="transactionPointcut"/>
 	</bean>
 	
 	<bean id="userDao" class="com.okstudio.user.dao.UserDaoJdbc">

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -115,7 +116,7 @@ public class UserServiceTest {
 		testUserService.setUserDao(this.userDao);		
 		testUserService.setMailSender(mailSender);
 		
-		TxProxyFactoryBean txProxyFactoryBean = this.context.getBean("&userService", TxProxyFactoryBean.class);
+		ProxyFactoryBean txProxyFactoryBean = this.context.getBean("&userService", ProxyFactoryBean.class);		
 		txProxyFactoryBean.setTarget(testUserService);
 		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 
@@ -130,11 +131,7 @@ public class UserServiceTest {
 		} catch(TestUserServiceException e) {}
 		
 		this.checkLevel(users.get(1), false);
-	}
-	private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
-		assertThat(updated.getId(), is(expectedId));
-		assertThat(updated.getLevel(), is(expectedLevel));
-	}
+	}	
 	
 	private void checkLevel(User user, boolean upgraded){
 		User userUpdate = userDao.get(user.getId());
