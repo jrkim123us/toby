@@ -8,19 +8,31 @@
 						http://www.springframework.org/schema/aop
 						http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
 						http://www.springframework.org/schema/tx
-						http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
-	<aop:config>
-		<aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>
-		<aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>
+						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	<aop:config>		
+		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
 	</aop:config>
 	
-	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+	<tx:advice id="transactionAdvice">
 		<tx:attributes>
-			<tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30"/>
-			<tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
-			<tx:method name="*" propagation="REQUIRED"/>
+			<tx:method name="get*" read-only="true"/>			
+			<tx:method name="*"/>
 		</tx:attributes>
 	</tx:advice>
+	
+	<bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="org.mariadb.jdbc.Driver" />
@@ -36,15 +48,10 @@
 	
 	<bean id="testUserService" class="com.okstudio.user.service.UserServiceTest$TestUserServiceImpl" parent="userService">		
 	</bean>
-	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
 		
 	<bean id="userDao" class="com.okstudio.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />		
 	</bean>
 	
-	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>
-	
+	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>	
 </beans>

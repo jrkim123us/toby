@@ -67,4 +67,25 @@ public class UserServiceImpl implements UserService {
 			default : throw new IllegalArgumentException("Unknown Level: " + currentLevel);
 		}
 	}
+
+
+	@Override
+	public User get(String id) {
+		return this.userDao.get(id);
+	}
+
+	@Override
+	public List<User> getAll() {
+		return this.userDao.getAll();
+	}
+
+	@Override
+	public void deleteAll() {
+		this.userDao.deleteAll();
+	}
+
+	@Override
+	public void update(User user) {
+		this.userDao.update(user);		
+	}
 }
