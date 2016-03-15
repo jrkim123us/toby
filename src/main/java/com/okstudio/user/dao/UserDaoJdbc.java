@@ -56,7 +56,6 @@ public class UserDaoJdbc implements UserDao {
 	}
 	
 	public void update(User user) {
-		System.out.println("update");
 		this.jdbcTemplate.update(
 			"update users set name=?,password=?,level=?,login=?,recommend=?,email=? where id=?",
 			user.getName(),
