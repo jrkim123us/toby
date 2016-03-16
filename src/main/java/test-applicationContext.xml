@@ -1,8 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+						http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+	<!-- <aop:config>		
+		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
+	</aop:config> -->
+	
+	<tx:annotation-driven/>
+	
+	<!-- <tx:advice id="transactionAdvice">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true"/>			
+			<tx:method name="*"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<bean id="transactionAdvice" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean> -->
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="org.mariadb.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://127.0.0.1:3306/toby?characterEncoding=UTF-8" />
@@ -10,23 +43,17 @@
 		<property name="password" value="" />
 	</bean>
 	
-	<bean id="userService" class="com.okstudio.user.service.UserService">
+	<bean id="userService" class="com.okstudio.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao"/>
-		<property name="transactionManager" ref="transactionManager" />
 		<property name="mailSender" ref="mailSender"/>
 	</bean>
 	
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
+	<bean id="testUserService" class="com.okstudio.user.service.UserServiceTest$TestUserServiceImpl" parent="userService">		
 	</bean>
-	
+		
 	<bean id="userDao" class="com.okstudio.user.dao.UserDaoJdbc">
 		<property name="dataSource" ref="dataSource" />		
-	</bean>	
+	</bean>
 	
-	<!-- <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="mail.server.com"/>
-	</bean> -->
-	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>
-	
+	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>	
 </beans>
