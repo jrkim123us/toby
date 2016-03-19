@@ -15,6 +15,11 @@ import com.okstudio.user.domain.User;
 public class UserDaoJdbc implements UserDao {
 
 	private JdbcTemplate jdbcTemplate;
+	private String sqlAdd;
+	
+	public void setSqlAdd(String sqlAdd) {
+		this.sqlAdd = sqlAdd;
+	}
 	
 	private RowMapper<User> userMapper = 
 		new RowMapper<User>() {
@@ -37,7 +42,8 @@ public class UserDaoJdbc implements UserDao {
 
 	public void add(final User user) {
 		this.jdbcTemplate.update(
-			"insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)",
+			this.sqlAdd,
+//			"insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)",
 			user.getId(),
 			user.getName(),
 			user.getPassword(),
