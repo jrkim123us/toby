@@ -3,6 +3,7 @@ package com.okstudio.user.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -15,10 +16,10 @@ import com.okstudio.user.domain.User;
 public class UserDaoJdbc implements UserDao {
 
 	private JdbcTemplate jdbcTemplate;
-	private String sqlAdd;
+	private Map<String, String> sqlMap;
 	
-	public void setSqlAdd(String sqlAdd) {
-		this.sqlAdd = sqlAdd;
+	public void setSqlMap(Map<String, String> sqlMap) {
+		this.sqlMap = sqlMap;
 	}
 	
 	private RowMapper<User> userMapper = 
@@ -42,8 +43,7 @@ public class UserDaoJdbc implements UserDao {
 
 	public void add(final User user) {
 		this.jdbcTemplate.update(
-			this.sqlAdd,
-//			"insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)",
+			this.sqlMap.get("add"),
 			user.getId(),
 			user.getName(),
 			user.getPassword(),
@@ -55,7 +55,8 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public User get(String id) {
-		return this.jdbcTemplate.queryForObject("select * from users where id = ?",
+		return this.jdbcTemplate.queryForObject(
+			this.sqlMap.get("get"),
 			new Object[] {id},
 			this.userMapper
 		);
@@ -63,7 +64,7 @@ public class UserDaoJdbc implements UserDao {
 	
 	public void update(User user) {
 		this.jdbcTemplate.update(
-			"update users set name=?,password=?,level=?,login=?,recommend=?,email=? where id=?",
+			this.sqlMap.get("update"),
 			user.getName(),
 			user.getPassword(),
 			user.getLevel().intValue(),
@@ -74,15 +75,15 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	public void deleteAll() {
-		this.jdbcTemplate.update("delete from users");
+		this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
 	}
 
 	public int getCount()  {
-		return this.jdbcTemplate.queryForObject("select count(1) from users", null, Integer.class);		
+		return this.jdbcTemplate.queryForObject(this.sqlMap.get("getCount"), null, Integer.class);		
 	}
 	
 	public List<User> getAll(){
-		return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+		return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userMapper);
 	}
 
 }
