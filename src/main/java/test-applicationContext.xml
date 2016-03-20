@@ -37,17 +37,15 @@
 		<property name="sqlService" ref="sqlService"/>		
 	</bean>
 	
-	<bean id="sqlService" class="com.okstudio.user.sqlservice.BaseSqlService">
-		<property name="sqlReader" ref="sqlReader"/>
-		<property name="sqlRegistry" ref="sqlRegistry"/>				
+	<bean id="sqlService" class="com.okstudio.user.sqlservice.DefaultSqlService">						
 	</bean>
 	
-	<bean id="sqlReader" class="com.okstudio.user.sqlservice.JaxbXmlSqlReader">
+	<!-- <bean id="sqlReader" class="com.okstudio.user.sqlservice.JaxbXmlSqlReader">
 		<property name="sqlmapFile" value="sqlmap.xml"/>
 	</bean>
 	
 	<bean id="sqlRegistry" class="com.okstudio.user.sqlservice.HashMapSqlRegistry">		
-	</bean>
+	</bean> -->
 	
 	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>	
 </beans>
