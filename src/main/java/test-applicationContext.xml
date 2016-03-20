@@ -37,15 +37,13 @@
 		<property name="sqlService" ref="sqlService"/>		
 	</bean>
 	
-	<bean id="sqlService" class="com.okstudio.user.sqlservice.DefaultSqlService">						
+	<bean id="sqlService" class="com.okstudio.user.sqlservice.OxmSqlService">
+		<property name="unmarshaller" ref="unmarshaller"/>						
 	</bean>
 	
-	<!-- <bean id="sqlReader" class="com.okstudio.user.sqlservice.JaxbXmlSqlReader">
-		<property name="sqlmapFile" value="sqlmap.xml"/>
+	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="com.okstudio.user.sqlservice.jaxb"/>
 	</bean>
-	
-	<bean id="sqlRegistry" class="com.okstudio.user.sqlservice.HashMapSqlRegistry">		
-	</bean> -->
 	
 	<bean id="mailSender" class="com.okstudio.user.service.DummyMailSender"/>	
 </beans>
