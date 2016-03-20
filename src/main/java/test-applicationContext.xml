@@ -39,8 +39,11 @@
 	
 	<bean id="sqlService" class="com.okstudio.user.sqlservice.OxmSqlService">
 		<property name="unmarshaller" ref="unmarshaller"/>
-		<property name="sqlmap" value="classpath:com/okstudio/user/dao/sqlmap.xml"></property>					
+		<property name="sqlmap" value="classpath:com/okstudio/user/dao/sqlmap.xml"></property>
+		<property name="sqlRegistry" ref="sqlRegistry"/>					
 	</bean>
+	
+	<bean id="sqlRegistry" class="com.okstudio.user.sqlservice.updatable.ConcurrentHashMapSqlRegistry"></bean>
 	
 	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath" value="com.okstudio.user.sqlservice.jaxb"/>
