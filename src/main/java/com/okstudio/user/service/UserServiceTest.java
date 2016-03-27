@@ -31,12 +31,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.okstudio.user.TestApplicationContext;
 import com.okstudio.user.dao.UserDao;
 import com.okstudio.user.domain.Level;
 import com.okstudio.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
+@ContextConfiguration(classes=TestApplicationContext.class)
 public class UserServiceTest {	
 	@Autowired private UserDao userDao;
 	@Autowired UserService userService;
@@ -196,7 +197,7 @@ public class UserServiceTest {
 	}
 
 	
-	static class TestUserServiceImpl extends UserServiceImpl {
+	public static class TestUserServiceImpl extends UserServiceImpl {
 		private String id = "004_madnite1";
 
 		protected void upgradeLevel(User user) {

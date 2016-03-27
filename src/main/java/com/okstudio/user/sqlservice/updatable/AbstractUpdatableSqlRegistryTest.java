@@ -26,10 +26,10 @@ public abstract class AbstractUpdatableSqlRegistryTest {
 	
 	@Test
 	public void find() {
-		this.checkFindResult("SQL1", "SQL2", "SQL3");
+		this.checkFind("SQL1", "SQL2", "SQL3");
 	}
 	
-	private void checkFindResult(String expected1, String expected2, String expected3) {
+	protected void checkFind(String expected1, String expected2, String expected3) {
 		assertThat(this.sqlRegistry.findSql("KEY1"), is(expected1));
 		assertThat(this.sqlRegistry.findSql("KEY2"), is(expected2));
 		assertThat(this.sqlRegistry.findSql("KEY3"), is(expected3));		
@@ -43,7 +43,7 @@ public abstract class AbstractUpdatableSqlRegistryTest {
 	@Test
 	public void updateSingle() {
 		this.sqlRegistry.updateSql("KEY2", "Modified2");
-		this.checkFindResult("SQL1", "Modified2", "SQL3");
+		this.checkFind("SQL1", "Modified2", "SQL3");
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ public abstract class AbstractUpdatableSqlRegistryTest {
 		sqlmap.put("KEY3", "Modified3");
 		
 		this.sqlRegistry.updateSql(sqlmap);
-		this.checkFindResult("Modified1", "SQL2", "Modified3");
+		this.checkFind("Modified1", "SQL2", "Modified3");
 	}
 	
 	@Test(expected=SqlUpdateFailureException.class)
