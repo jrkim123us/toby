@@ -2,6 +2,7 @@ package com.okstudio.user;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.MailSender;
 
 import com.okstudio.user.service.DummyMailSender;
@@ -9,6 +10,7 @@ import com.okstudio.user.service.UserService;
 import com.okstudio.user.service.UserServiceTest.TestUserServiceImpl;
 
 @Configuration
+@Profile("test")
 public class TestAppContext {
 	
 	@Bean

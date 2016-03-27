@@ -14,16 +14,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.okstudio.user.AppContext;
-import com.okstudio.user.TestAppContext;
 import com.okstudio.user.domain.Level;
 import com.okstudio.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={AppContext.class, TestAppContext.class})
+@ActiveProfiles("test")
+@ContextConfiguration(classes=AppContext.class)
 @DirtiesContext
 public class UserDaoTest {
 	@Autowired
