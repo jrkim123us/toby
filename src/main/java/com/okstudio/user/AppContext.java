@@ -7,17 +7,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.okstudio.user.dao.UserDao;
+import com.okstudio.user.service.DummyMailSender;
+import com.okstudio.user.service.UserService;
+import com.okstudio.user.service.UserServiceTest.TestUserServiceImpl;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.okstudio.user")
-@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
+@Import(SqlServiceContext.class)
 public class AppContext {
 	@Autowired UserDao userDao;
 	
@@ -39,4 +45,31 @@ public class AppContext {
 		transactionManager.setDataSource(dataSource());
 		return transactionManager;
 	}
+	
+	@Configuration
+	@Profile("production")
+	public static class ProductionAppContext {
+		@Bean
+		public MailSender mailSender() {
+			JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+			mailSender.setHost("localhost");
+			return mailSender;
+		}
+	}
+	
+	@Configuration
+	@Profile("test")
+	public static class TestAppContext {
+		
+		@Bean
+		public UserService testUserService() {		
+			return new TestUserServiceImpl();
+		}
+		
+		@Bean
+		public MailSender mailSender() {
+			return new DummyMailSender();
+		}
+	}
+
 }
