@@ -18,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.okstudio.user.dao.UserSqlMapConfig;
 import com.okstudio.user.service.DummyMailSender;
 import com.okstudio.user.service.UserService;
 import com.okstudio.user.service.UserServiceTest.TestUserServiceImpl;
@@ -40,11 +41,6 @@ public class AppContext {
 	@Bean
 	public DataSource dataSource() {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-		
-//		dataSource.setDriverClass(org.mariadb.jdbc.Driver.class);
-//		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/toby?characterEncoding=UTF-8");
-//		dataSource.setUsername("root");
-//		dataSource.setPassword("");
 		
 		try {
 			dataSource.setDriverClass((Class<? extends java.sql.Driver>)Class.forName(env.getProperty("db.driverClass")));
@@ -69,6 +65,11 @@ public class AppContext {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
 		transactionManager.setDataSource(dataSource());
 		return transactionManager;
+	}
+	
+	@Bean
+	public SqlMapConfig sqlMapConfig() {
+		return new UserSqlMapConfig();
 	}
 	
 	@Bean
