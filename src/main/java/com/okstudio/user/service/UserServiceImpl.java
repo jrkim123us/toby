@@ -2,25 +2,26 @@ package com.okstudio.user.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 
 import com.okstudio.user.dao.UserDao;
 import com.okstudio.user.domain.Level;
 import com.okstudio.user.domain.User;
 
-//@Transactional
+@Service("userService")
 public class UserServiceImpl implements UserService {
 	public static final int MIN_LOGCOUNT_FOL_SILVER = 50;
 	public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 	
-	private UserDao userDao;
-	private MailSender mailSender;
+	@Autowired private UserDao userDao;
+	@Autowired private MailSender mailSender;
 	
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
-
 	
 	public void setMailSender(MailSender mailSender) {
 		this.mailSender = mailSender;
